@@ -131,9 +131,19 @@
   _.uniq = function(array, isSorted, iterator) {
     //create a result arr
     var result = [];
-
-
-    //return arr
+    //create uniqe object
+    var unique = {};
+    //iterate over input array
+    for (var i = 0; i < array.length; i++) {
+      //unique object at key of array[i] is set equal to array [i]
+      unique[array[i]] = array[i];
+    }
+    //iterate over unique object
+    for (var key in unique) {
+      //push each object value into result
+      result.push(unique[key]);
+    }
+    //return result
     return result;
   };
 
@@ -172,7 +182,7 @@
   };
 
   // Reduces an array or object to a single value by repetitively calling
-  // iterator(accumulator, item) for each item. accumulator should be
+  // iterator(accumulator, item) for EACH item. accumulator should be
   // the return value of the previous iterator call.
   //
   // You can pass in a starting value for the accumulator as the third argument
@@ -192,6 +202,29 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    //if accumulator is undefined
+    if (accumulator === undefined) {
+      //create a copy of the input array
+      var newArr = collection.slice();
+      //create a variable to represent the first element of newArr after shifting it off
+      var first = newArr.shift();
+      //set accumulator to that shifted value
+      accumulator = first;
+      // iterate over the modified new arr
+      _.each(newArr, function(item) {
+        //the accum is re-assigned to the value of calling iterator on the accum and item
+        accumulator = iterator(accumulator, item);
+      });
+      //return the accumlator when the loop is over
+      return accumulator;
+    } else {
+      //loop over the original arr (since accum was defined)
+      _.each(collection, function(item) {
+        //the accum is re-assigned to the value of calling iterator on the accum and item
+        accumulator = iterator(accumulator, item);
+      });
+      return accumulator;
+    }
   };
 
   // Determine if the array or object contains a given value (using `===`).
