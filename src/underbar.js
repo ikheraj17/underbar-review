@@ -243,12 +243,48 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    //set iterator to be itself or a identity value if no value is passed
+    iterator = iterator || _.identity;
+    //loop over the collection
+    for (var i = 0; i < collection.length; i ++) {
+      //check if any results are false
+      if (!iterator(collection[i])) {
+        //if any are return false
+        return false;
+      }
+    }
+    //otherwise returns true
+    return true;
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    var result = false;
+    //set iterator to passed in value or identity if nothing is passed in
+    iterator = iterator || _.identity;
+    //empty collection
+    if (collection.length === 0) {
+      return false;
+    }
+    //if every item in collection passes the iterator test
+    if (_.every(collection, iterator)) {
+      //set result to true
+      result = true;
+      //or else
+    } else {
+      //for each item in collection, run a function
+      _.each(collection, function(item) {
+        //if iterator applied to item is true
+        if (iterator(item)) {
+          //result is equal to true;
+          result = true;
+        }
+      });
+    }
+    //return result
+    return result;
   };
 
 
@@ -271,11 +307,47 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    //gain access to every argument
+    for (var i = 1; i < arguments.length; i ++) {
+      //iterate over the arguments keys
+      for (var key in arguments[i]) {
+        //set the values of the new arguments to be the original objs values
+        arguments[0][key] = arguments[i][key];
+      }
+    }
+    //return the obj
+    return obj;
   };
+
+
+  /*
+  function(obj) {
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+  }
+    for (var key in arg) {
+      obj[key] = arg[key]
+    }
+  }
+
+  */
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    //iterate over arguments, ignoring the first argument
+    for (var i = 1; i < arguments.length; i ++) {
+      //iterate through the keys within arguments[i]
+      for (var key in arguments[i]) {
+        //if the first argument does not contain the key of the current argument
+        if (arguments[0][key] === undefined) {
+          //set values of new arguments to be original objs values
+          arguments[0][key] = arguments[i][key];
+        }
+      }
+    }
+    //return the obj;
+    return obj;
   };
 
 
