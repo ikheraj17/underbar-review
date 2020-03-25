@@ -391,6 +391,20 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    //create result object
+    var result = {};
+    //return a function
+    return function() {
+      ////stringify our arguments
+      var args = JSON.stringify(arguments);
+      //if result at arguments hasn't been called
+      if (result[args] === undefined) {
+        //result [args] is equal to the call to this current argument
+        result[args] = func.apply(this, arguments);
+      }
+      //return result[args]
+      return result[args];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -400,6 +414,16 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    //convert the arguments into a userable array
+    var args = [...arguments];
+    //exclude the first two args, which would be someFunction and the input
+    //time, create a copy of arguments array without these values
+    args = args.slice(2);
+    setTimeout(function() {
+      //set timeout is applied on a function that calls on the current argument
+      func.apply(this, args);
+      //and applies the wait time to that function call
+    }, wait);
   };
 
 
@@ -414,6 +438,26 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    //var for new array
+    var newArr = array.slice();
+    //set the index variable to last index of array
+    var origIndex = array.length - 1; // -----> 3
+    //set placeholder values
+    var temporary, newIndex;
+    //while our original index is greater than or equal to 0
+    while (origIndex) {
+      //change new index
+      newIndex = Math.floor(Math.random() * origIndex); // random number times 3
+      //subtract one from original index
+      origIndex -= 1; // orig index = 2;
+      //set temporary to be the value of the copied array at the negatively
+      //incremented original index
+      temporary = newArr[origIndex];
+      newArr[origIndex] = newArr[newIndex]; // set to 3
+      temporary = newArr[newIndex];
+      //newArr[newIndex] = temporary;
+    }
+    return newArr;
   };
 
 
